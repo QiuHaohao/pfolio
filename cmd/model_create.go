@@ -5,24 +5,24 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/QiuHaohao/pfolio/internal/cli"
 	"github.com/QiuHaohao/pfolio/internal/config"
 	"github.com/QiuHaohao/pfolio/internal/db"
 	"github.com/QiuHaohao/pfolio/internal/editor"
-	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 )
 
-var name string
-
 // modelCreateCmd represents the create command
 var modelCreateCmd = &cobra.Command{
-	Use:   "create",
+	Use:   "create model_name",
 	Short: "Create a model",
 	Long:  `Create a model.`,
-	Args:  cobra.NoArgs,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		name := args[0]
+
 		if err := db.Get().CheckIsNewModelName(name); err != nil {
 			log.Fatal(err)
 		}
@@ -48,13 +48,10 @@ var modelCreateCmd = &cobra.Command{
 		}
 
 		db.Persist()
-		fmt.Printf("Model %s successfully created!\n", color.New(color.FgHiWhite, color.Bold).Sprintf(name))
+		fmt.Printf("Model %s successfully created!\n", cli.Highlight(name))
 	},
 }
 
 func init() {
 	modelCmd.AddCommand(modelCreateCmd)
-
-	modelCreateCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the new model")
-	modelCreateCmd.MarkFlagRequired("name")
 }

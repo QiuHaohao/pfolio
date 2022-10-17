@@ -10,7 +10,7 @@ import (
 
 // modelViewCmd represents the view command
 var modelViewCmd = &cobra.Command{
-	Use:   "view",
+	Use:   "view model_name",
 	Short: "View a model",
 	Long:  `View a model.`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -20,7 +20,4 @@ var modelViewCmd = &cobra.Command{
 
 func init() {
 	modelCmd.AddCommand(modelViewCmd)
-
-	modelViewCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the new model")
-	modelViewCmd.MarkFlagRequired("name")
 }

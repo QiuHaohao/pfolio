@@ -65,6 +65,7 @@ func initConfig() {
 
 	viper.SetDefault(config.KeyDB, path.Join(home, "./.pfolio_db.yaml"))
 	viper.SetDefault(config.KeyEditor, "code -w")
+	viper.SetDefault(config.KeyPager, "less")
 	viper.SetDefault(config.KeyDefaultModel, db.ModelEntries{
 		{
 			InstrumentIdentifier: "TLT",

@@ -27,11 +27,11 @@ type modelWithName struct {
 	model db.Model
 }
 
-// modelListCmd represents the list command
-var modelListCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List models",
-	Long:  `List models.`,
+// modelLsCmd represents the list command
+var modelLsCmd = &cobra.Command{
+	Use:   "ls",
+	Short: "Ls models",
+	Long:  `Ls models.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cli.PrintDivider()
 		tbl := table.New("Model Name", "Create Time", "Update Time")
@@ -77,13 +77,13 @@ var modelListCmd = &cobra.Command{
 }
 
 func init() {
-	modelCmd.AddCommand(modelListCmd)
+	modelCmd.AddCommand(modelLsCmd)
 
-	modelListCmd.Flags().BoolVarP(&sortByName, "sort-by-name", "n", false, "Sort by name(default)")
-	modelListCmd.Flags().BoolVarP(&sortByCreateTime, "sort-by-create-time", "c", false, "Sort by create time")
-	modelListCmd.Flags().BoolVarP(&sortByUpdateTime, "sort-by-update-time", "u", false, "Sort by update time")
-	modelListCmd.MarkFlagsMutuallyExclusive("sort-by-name", "sort-by-create-time", "sort-by-update-time")
+	modelLsCmd.Flags().BoolVarP(&sortByName, "sort-by-name", "n", false, "Sort by name(default)")
+	modelLsCmd.Flags().BoolVarP(&sortByCreateTime, "sort-by-create-time", "c", false, "Sort by create time")
+	modelLsCmd.Flags().BoolVarP(&sortByUpdateTime, "sort-by-update-time", "u", false, "Sort by update time")
+	modelLsCmd.MarkFlagsMutuallyExclusive("sort-by-name", "sort-by-create-time", "sort-by-update-time")
 
-	modelListCmd.Flags().BoolVarP(&descending, "descending", "d", false, "Sort in descending order")
+	modelLsCmd.Flags().BoolVarP(&descending, "descending", "d", false, "Sort in descending order")
 
 }

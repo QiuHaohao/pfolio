@@ -79,6 +79,10 @@ func (d *Database) GetModel(name string) (Model, bool) {
 	return m, ok
 }
 
+func (d *Database) RemoveModel(name string) {
+	delete(d.Models, name)
+}
+
 func (d *Database) ModelNameExists(name string) bool {
 	_, ok := d.GetModel(name)
 	return ok

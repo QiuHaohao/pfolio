@@ -5,23 +5,31 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/QiuHaohao/pfolio/internal/cli"
+	"github.com/QiuHaohao/pfolio/internal/db"
 
 	"github.com/spf13/cobra"
 )
 
 // modelRmCmd represents the rm command
 var modelRmCmd = &cobra.Command{
-	Use:   "rm",
+	Use:   "rm model_name...",
 	Short: "Remove a model",
 	Long:  `Remove a model.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("rm called")
+		for _, name := range args {
+			if !db.Get().ModelNameExists(name) {
+				fmt.Printf("Model %s does not exist.\n", cli.Highlight(name))
+				continue
+			}
+			db.Get().RemoveModel(name)
+			fmt.Printf("Model %s removed.\n", cli.Highlight(name))
+		}
+
+		db.Persist()
 	},
 }
 
 func init() {
 	modelCmd.AddCommand(modelRmCmd)
-
-	modelRmCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the new model")
-	modelRmCmd.MarkFlagRequired("name")
 }
