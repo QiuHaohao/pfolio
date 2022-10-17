@@ -4,9 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"github.com/QiuHaohao/pfolio/internal/config"
 	"github.com/QiuHaohao/pfolio/internal/db"
 	"github.com/QiuHaohao/pfolio/internal/editor"
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
@@ -46,6 +48,7 @@ var modelCreateCmd = &cobra.Command{
 		}
 
 		db.Persist()
+		fmt.Printf("Model %s successfully created!\n", color.New(color.FgHiWhite, color.Bold).Sprintf(name))
 	},
 }
 
