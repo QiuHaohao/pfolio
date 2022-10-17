@@ -79,8 +79,13 @@ func (d *Database) GetModel(name string) (Model, bool) {
 	return m, ok
 }
 
+func (d *Database) ModelNameExists(name string) bool {
+	_, ok := d.GetModel(name)
+	return ok
+}
+
 func (d *Database) CheckIsNewModelName(name string) error {
-	if _, ok := d.GetModel(name); ok {
+	if d.ModelNameExists(name) {
 		return ErrDuplicatedModelName
 	}
 	return nil

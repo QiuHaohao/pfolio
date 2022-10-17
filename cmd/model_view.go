@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -22,13 +21,6 @@ var modelViewCmd = &cobra.Command{
 func init() {
 	modelCmd.AddCommand(modelViewCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// modelViewCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// modelViewCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	modelViewCmd.Flags().StringVarP(&name, "name", "n", "", "Name of the new model")
+	modelViewCmd.MarkFlagRequired("name")
 }
