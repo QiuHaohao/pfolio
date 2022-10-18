@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"github.com/QiuHaohao/pfolio/internal/clock"
+	"github.com/qiuhaohao/pfolio/internal/clock"
 	"testing"
 	"time"
 

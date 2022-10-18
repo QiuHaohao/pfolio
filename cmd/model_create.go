@@ -5,13 +5,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/QiuHaohao/pfolio/internal/cli"
-	"github.com/QiuHaohao/pfolio/internal/config"
-	"github.com/QiuHaohao/pfolio/internal/db"
-	"github.com/QiuHaohao/pfolio/internal/editor"
+	"log"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
+
+	"github.com/qiuhaohao/pfolio/internal/cli"
+	"github.com/qiuhaohao/pfolio/internal/config"
+	"github.com/qiuhaohao/pfolio/internal/db"
+	"github.com/qiuhaohao/pfolio/internal/editor"
 )
 
 // modelCreateCmd represents the create command

@@ -2,13 +2,15 @@ package db
 
 import (
 	"errors"
-	"github.com/QiuHaohao/pfolio/internal/clock"
-	"github.com/QiuHaohao/pfolio/internal/config"
-	"github.com/spf13/viper"
-	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
+
+	"github.com/qiuhaohao/pfolio/internal/clock"
+	"github.com/qiuhaohao/pfolio/internal/config"
 )
 
 var database *Database
@@ -122,6 +124,15 @@ var (
 	ErrEquivalentInstrumentInModel           = errors.New("equivalent instrument found to be in model")
 )
 
+func (es ModelEntries) TotalWeight() float64 {
+	totalWeight := float64(0)
+	for _, e := range es {
+		totalWeight += e.Weight
+	}
+
+	return totalWeight
+}
+
 func (es ModelEntries) Validate() error {
 	// identifiers must be unique
 	iiMap := make(map[InstrumentIdentifier]struct{})
@@ -168,4 +179,11 @@ type ModelEntry struct {
 	InstrumentIdentifier  InstrumentIdentifier   `yaml:"instrument_identifier"`
 	Weight                float64                `yaml:"weight"`
 	EquivalentInstruments []InstrumentIdentifier `yaml:"equivalent_instruments"`
+}
+
+func (e ModelEntry) GetStringsEquivalentInstruments() (ss []string) {
+	for _, ei := range e.EquivalentInstruments {
+		ss = append(ss, string(ei))
+	}
+	return
 }

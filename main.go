@@ -22,7 +22,7 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/QiuHaohao/pfolio/cmd"
+	"github.com/qiuhaohao/pfolio/cmd"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/QiuHaohao/pfolio
+module github.com/qiuhaohao/pfolio
 
 go 1.19
 

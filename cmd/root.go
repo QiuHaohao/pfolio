@@ -22,11 +22,12 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"github.com/QiuHaohao/pfolio/internal/config"
-	"github.com/QiuHaohao/pfolio/internal/db"
 	"log"
 	"os"
 	"path"
+
+	"github.com/qiuhaohao/pfolio/internal/config"
+	"github.com/qiuhaohao/pfolio/internal/db"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -65,7 +66,6 @@ func initConfig() {
 
 	viper.SetDefault(config.KeyDB, path.Join(home, "./.pfolio_db.yaml"))
 	viper.SetDefault(config.KeyEditor, "code -w")
-	viper.SetDefault(config.KeyPager, "less")
 	viper.SetDefault(config.KeyDefaultModel, db.ModelEntries{
 		{
 			InstrumentIdentifier: "TLT",

@@ -4,14 +4,14 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"github.com/QiuHaohao/pfolio/internal/cli"
-	"github.com/QiuHaohao/pfolio/internal/db"
 	"sort"
 	"time"
 
-	"github.com/fatih/color"
-	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
+
+	"github.com/qiuhaohao/pfolio/internal/cli"
+	"github.com/qiuhaohao/pfolio/internal/db"
+	"github.com/qiuhaohao/pfolio/internal/table"
 )
 
 var (
@@ -35,8 +35,6 @@ var modelLsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cli.PrintDivider()
 		tbl := table.New("Model Name", "Create Time", "Update Time")
-		tbl.WithHeaderFormatter(color.New(color.Bold, color.FgYellow).Sprintf)
-		tbl.WithFirstColumnFormatter(color.New(color.Bold, color.FgHiWhite).Sprintf)
 
 		modelsWithName := make([]modelWithName, 0)
 		for name, m := range db.Get().Models {

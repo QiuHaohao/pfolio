@@ -5,8 +5,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/QiuHaohao/pfolio/internal/cli"
-	"github.com/QiuHaohao/pfolio/internal/db"
+
+	"github.com/qiuhaohao/pfolio/internal/cli"
+	"github.com/qiuhaohao/pfolio/internal/db"
 
 	"github.com/spf13/cobra"
 )
