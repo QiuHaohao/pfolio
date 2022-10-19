@@ -60,7 +60,16 @@ func Persist() {
 }
 
 type Database struct {
-	Models map[string]Model `yaml:"models"`
+	Models     map[string]Model `yaml:"models"`
+	Metamodels Metamodels       `yaml:"metamodels"`
+}
+
+type Metamodels struct {
+	SyfeMetamodels SyfeMetamodels
+}
+
+type SyfeMetamodels struct {
+	Endpoint string
 }
 
 func (d *Database) AddModel(name string, entries []ModelEntry, isDerivedFromMetaModel bool) error {
