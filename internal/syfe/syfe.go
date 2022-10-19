@@ -5,10 +5,17 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
 const endpoint = "https://api.syfe.com/portfolios/data"
+
+var (
+	ErrPortfolioTypeNotFoundInResponse = errors.New("portfolio type not found in response")
+	ErrPortfolioMetaNotFoundInResponse = errors.New("portfolio meta not found in response")
+	ErrSymbolMissingFromMapping        = errors.New("symbol missing from mapping")
+)
 
 type PortfolioDataResponseMeta map[string]PortfolioDataResponseMetaEntry
 type PortfolioDataResponseMetaEntry struct {
@@ -36,6 +43,50 @@ func convert(src, dst interface{}) error {
 	}
 
 	return nil
+}
+
+func TruncateAfterNthLargest(allocation Allocation, n int) Allocation {
+	if n >= len(allocation) {
+		return allocation
+	}
+
+	type item struct {
+		Symbol Symbol
+		Weight float64
+	}
+
+	items := make([]item, 0)
+	for s, weight := range allocation {
+		items = append(items, item{
+			Symbol: s,
+			Weight: weight,
+		})
+	}
+
+	sort.Slice(items, func(i, j int) bool {
+		return items[i].Weight > items[j].Weight || (items[i].Weight == items[j].Weight &&
+			items[i].Symbol < items[j].Symbol)
+	})
+
+	items = items[:n]
+	res := make(Allocation)
+	for _, i := range items {
+		res[i.Symbol] = i.Weight
+	}
+
+	return res
+}
+
+func MapSymbols(allocation Allocation, symbolMapping SymbolMapping) (Allocation, error) {
+	res := make(Allocation)
+	for s, weight := range allocation {
+		mappedSymbol, ok := symbolMapping[s]
+		if !ok {
+			return nil, ErrSymbolMissingFromMapping
+		}
+		res[mappedSymbol] = res[mappedSymbol] + weight
+	}
+	return res, nil
 }
 
 func GetAllocation(portfolioType string) (Allocation, error) {
@@ -68,7 +119,7 @@ func GetAllocation(portfolioType string) (Allocation, error) {
 	portfolioData := new(PortfolioData)
 	portfolioDataRaw, ok := dr[portfolioType]
 	if !ok {
-		return nil, errors.New("portfolio type not found in response")
+		return nil, ErrPortfolioTypeNotFoundInResponse
 	}
 
 	if err = convert(portfolioDataRaw, portfolioData); err != nil {
@@ -78,7 +129,7 @@ func GetAllocation(portfolioType string) (Allocation, error) {
 	meta := make(PortfolioDataResponseMeta)
 	metaRaw, ok := dr["meta"]
 	if !ok {
-		return nil, errors.New("portfolio meta not found in response")
+		return nil, ErrPortfolioMetaNotFoundInResponse
 	}
 
 	if err = convert(metaRaw, &meta); err != nil {
