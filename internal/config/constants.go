@@ -1,7 +1,8 @@
 package config
 
 const (
-	KeyDefaultModel = "default_model"
-	KeyEditor       = "editor"
-	KeyDB           = "db"
+	KeyDefaultModelEditView                = "default_model_edit_view"
+	KeyDefaultInitialSyfeMetamodelEditView = "default_initial_syfe_metamodel_edit_view"
+	KeyEditor                              = "editor"
+	KeyDB                                  = "db"
 )

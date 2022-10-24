@@ -4,16 +4,13 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
-	"github.com/qiuhaohao/pfolio/internal/cli"
+	"github.com/qiuhaohao/pfolio/internal/action"
 	"github.com/qiuhaohao/pfolio/internal/config"
-	"github.com/qiuhaohao/pfolio/internal/db"
-	"github.com/qiuhaohao/pfolio/internal/editor"
+	"github.com/qiuhaohao/pfolio/internal/view"
 )
 
 // modelCreateCmd represents the create command
@@ -25,32 +22,13 @@ var modelCreateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
 
-		if err := db.Get().CheckIsNewModelName(name); err != nil {
+		initialView := config.MustGetKey[view.ModelEditView](
+			config.KeyDefaultModelEditView)
+
+		a := action.NewDefaultAction()
+		if err := a.CreateModel(name, initialView); err != nil {
 			log.Fatal(err)
 		}
-
-		var entries db.ModelEntries
-		err := config.UnmarshalKey(config.KeyDefaultModel, &entries)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		entries, err = editor.EditYamlWithRetry(
-			viper.GetString(config.KeyEditor),
-			entries,
-			func(entries db.ModelEntries) error {
-				return entries.Validate()
-			})
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if err = db.Get().AddModel(name, entries, false); err != nil {
-			log.Fatal(err)
-		}
-
-		db.Persist()
-		fmt.Printf("Model %s successfully created!\n", cli.Highlight(name))
 	},
 }
 

@@ -4,12 +4,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
-	"github.com/qiuhaohao/pfolio/internal/cli"
-	"github.com/qiuhaohao/pfolio/internal/db"
+	"log"
 
 	"github.com/spf13/cobra"
+
+	"github.com/qiuhaohao/pfolio/internal/action"
 )
 
 // modelRmCmd represents the rm command
@@ -18,16 +17,9 @@ var modelRmCmd = &cobra.Command{
 	Short: "Remove a model",
 	Long:  `Remove a model.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		for _, name := range args {
-			if !db.Get().ModelNameExists(name) {
-				fmt.Printf("Model %s does not exist.\n", cli.Highlight(name))
-				continue
-			}
-			db.Get().RemoveModel(name)
-			fmt.Printf("Model %s removed.\n", cli.Highlight(name))
+		if err := action.NewDefaultAction().RemoveModels(args...); err != nil {
+			log.Fatal(err)
 		}
-
-		db.Persist()
 	},
 }
 

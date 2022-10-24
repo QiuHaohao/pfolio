@@ -26,11 +26,12 @@ import (
 	"os"
 	"path"
 
-	"github.com/qiuhaohao/pfolio/internal/config"
-	"github.com/qiuhaohao/pfolio/internal/db"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/qiuhaohao/pfolio/internal/config"
+	"github.com/qiuhaohao/pfolio/internal/db"
+	"github.com/qiuhaohao/pfolio/internal/view"
 )
 
 var cfgFile string
@@ -54,7 +55,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(
 		initConfig,
-		db.Load)
+		db.LoadDefaultDB)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.pfolio.yaml)")
 }
@@ -66,19 +67,8 @@ func initConfig() {
 
 	viper.SetDefault(config.KeyDB, path.Join(home, "./.pfolio_db.yaml"))
 	viper.SetDefault(config.KeyEditor, "code -w")
-	viper.SetDefault(config.KeyDefaultModel, db.ModelEntries{
-		{
-			InstrumentIdentifier: "TLT",
-			Weight:               4,
-		},
-		{
-			InstrumentIdentifier: "VOO",
-			Weight:               6,
-			EquivalentInstruments: []db.InstrumentIdentifier{
-				"CSPX",
-			},
-		},
-	})
+	viper.SetDefault(config.KeyDefaultModelEditView, view.GetDefaultInitialModelEditView())
+	viper.SetDefault(config.KeyDefaultInitialSyfeMetamodelEditView, view.GetDefaultInitialSyfeMetamodelEditView())
 
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)

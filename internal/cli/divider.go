@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func PrintDivider() {
-	w, _, _ := terminal.GetSize(int(os.Stdin.Fd()))
+func PrintDivider(stdin *os.File) {
+	w, _, _ := terminal.GetSize(int(stdin.Fd()))
 	fmt.Println(strings.Repeat("―", w))
 }

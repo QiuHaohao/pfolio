@@ -34,7 +34,7 @@ func TestMustOpen(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MustOpen(tt.args.editor, tt.args.initialContent); !reflect.DeepEqual(got, tt.want) {
+			if got := MustOpen(tt.args.initialContent, WithEditor(tt.args.editor)); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MustOpen() = %v, want %v", got, tt.want)
 			}
 		})

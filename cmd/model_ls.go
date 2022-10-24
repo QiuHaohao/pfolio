@@ -4,14 +4,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"sort"
-	"time"
-
 	"github.com/spf13/cobra"
 
-	"github.com/qiuhaohao/pfolio/internal/cli"
-	"github.com/qiuhaohao/pfolio/internal/db"
-	"github.com/qiuhaohao/pfolio/internal/table"
+	"github.com/qiuhaohao/pfolio/internal/action"
 )
 
 var (
@@ -22,56 +17,26 @@ var (
 	descending bool
 )
 
-type modelWithName struct {
-	name  string
-	model db.Model
-}
-
 // modelLsCmd represents the list command
 var modelLsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "Ls models",
 	Long:  `Ls models.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		cli.PrintDivider()
-		tbl := table.New("Model Name", "Create Time", "Update Time")
-
-		modelsWithName := make([]modelWithName, 0)
-		for name, m := range db.Get().Models {
-			modelsWithName = append(modelsWithName, modelWithName{name: name, model: m})
-		}
-
-		var sortFn func(i, j int) bool
-
-		if sortByCreateTime {
-			sortFn = func(i, j int) bool {
-				return modelsWithName[i].model.CreateTime.Before(modelsWithName[j].model.CreateTime)
-			}
-		} else if sortByUpdateTime {
-			sortFn = func(i, j int) bool {
-				return modelsWithName[i].model.UpdateTime.Before(modelsWithName[j].model.UpdateTime)
-			}
-		} else {
-			sortFn = func(i, j int) bool {
-				return modelsWithName[i].name < (modelsWithName[j].name)
-			}
-		}
-
-		if descending {
-			ascSortFn := sortFn
-			sortFn = func(i, j int) bool {
-				return !ascSortFn(i, j)
-			}
-		}
-
-		sort.Slice(modelsWithName, sortFn)
-
-		for _, m := range modelsWithName {
-			tbl.AddRow(m.name, m.model.CreateTime.Format(time.RFC822), m.model.UpdateTime.Format(time.RFC822))
-		}
-
-		tbl.Print()
+		action.NewDefaultAction().ListModels(
+			modelSortFlagToSortOrder(
+				sortByName, sortByCreateTime, sortByUpdateTime),
+			descending)
 	},
+}
+
+func modelSortFlagToSortOrder(_, byCreateTime, byUpdateTime bool) action.ModelSortOrder {
+	if byCreateTime {
+		return action.ModelSortOrderByCreateTime
+	} else if byUpdateTime {
+		return action.ModelSortOrderByUpdateTime
+	}
+	return action.ModelSortOrderByName
 }
 
 func init() {
