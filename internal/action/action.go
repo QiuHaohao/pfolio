@@ -84,7 +84,7 @@ func (a Action) CreateModel(name string, initialView view.ModelEditView) (err er
 		return
 	}
 
-	_, err = fmt.Fprintf(a.stdout, "Model %s successfully created!\n", cli.Highlight(name))
+	_, err = a.printf("Model %s successfully created!\n", cli.Highlight(name))
 
 	return
 }
@@ -115,7 +115,7 @@ func (a Action) UpdateModel(name string) (err error) {
 		return
 	}
 
-	_, err = fmt.Fprintf(a.stdout, "Model %s successfully updated!\n", cli.Highlight(name))
+	_, err = a.printf("Model %s successfully updated!\n", cli.Highlight(name))
 
 	return
 }
@@ -127,13 +127,13 @@ func (a Action) ViewModel(name string) error {
 	}
 
 	cli.PrintDivider(a.stdin)
-	fmt.Printf("Model Name: %s", cli.Highlight(name))
+	a.printf("Model Name: %s", cli.Highlight(name))
 	if m.IsDerivedFromMetaModel {
-		fmt.Printf("(Derived from metamodel)")
+		a.printf("(Derived from metamodel)")
 	}
-	fmt.Println()
-	fmt.Printf("Create Time: %s\n", m.CreateTime.Format(time.RFC822))
-	fmt.Printf("Update Time: %s\n", m.UpdateTime.Format(time.RFC822))
+	a.println()
+	a.printf("Create Time: %s\n", m.CreateTime.Format(time.RFC822))
+	a.printf("Update Time: %s\n", m.UpdateTime.Format(time.RFC822))
 
 	cli.PrintDivider(a.stdin)
 	tbl := table.New(a.stdin, "Instrument", "Weight", "Percentage", "Equivalents")
@@ -218,11 +218,11 @@ func (a Action) ListModels(sortOrder ModelSortOrder, descending bool) {
 func (a Action) RemoveModels(names ...string) error {
 	for _, name := range names {
 		if _, ok := a.states().GetModel(name); !ok {
-			fmt.Printf("Model %s does not exist.\n", cli.Highlight(name))
+			a.printf("Model %s does not exist.\n", cli.Highlight(name))
 			continue
 		}
 		a.states().RemoveModel(name)
-		fmt.Printf("Model %s removed.\n", cli.Highlight(name))
+		a.printf("Model %s removed.\n", cli.Highlight(name))
 	}
 
 	return a.db.Save()
@@ -265,9 +265,17 @@ func (a Action) CreateSyfeMetamodel(name string, initialView view.SyfeMetamodelE
 		return
 	}
 
-	_, err = fmt.Fprintf(a.stdout, "Syfe metamodel %s successfully created!\n", cli.Highlight(name))
+	_, err = a.printf("Syfe metamodel %s successfully created!\n", cli.Highlight(name))
 
 	return
+}
+
+func (a Action) println(items ...any) (n int, err error) {
+	return fmt.Fprintln(a.stdout, items...)
+}
+
+func (a Action) printf(format string, items ...any) (n int, err error) {
+	return fmt.Fprintf(a.stdout, format, items...)
 }
 
 func newModel(entries []db.ModelEntry, isDerivedFromMetaModel bool) db.Model {
